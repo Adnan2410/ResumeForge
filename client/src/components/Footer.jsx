@@ -8,12 +8,12 @@ const Footer = () => {
 
         {/* Copyright Notice */}
         <p className="text-sm mb-2">
-          &copy; {new Date().getFullYear()} SmartResume. All Rights Reserved.
+          &copy; {new Date().getFullYear()} ResumeForge. All Rights Reserved.
         </p>
 
         {/* AI Disclaimer */}
         <p className="text-xs text-slate-400">
-          Disclaimer: SmartResume is an AI-powered tool and can make mistakes. Please review and verify all generated content.
+          Disclaimer: ResumeForge is an AI-powered tool and can make mistakes. Please review and verify all generated content.
         </p>
         
       </div>

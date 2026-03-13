@@ -25,6 +25,7 @@
     "mongoose": "^8.16.1",
     "multer": "^2.0.1",
     "openai": "^5.8.3",
+    "path-to-regexp": "^8.3.0",
     "pdfjs-dist": "^3.4.120",
     "pdfkit": "^0.17.1"
   },

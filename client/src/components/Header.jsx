@@ -43,7 +43,7 @@ const Header = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link to="/" className="text-2xl font-bold text-[#2563EB]">
-                SmartResume
+                ResumeForge
               </Link>
             </div>
             {/* Desktop Navigation Links */}
