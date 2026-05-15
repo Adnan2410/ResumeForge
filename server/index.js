@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import customizeRoutes from "./routes/customizeRoutes.js";
+import { customizeResume, downloadCustomizedPdf } from "./controllers/customizeResumeController.js";
 import { protect } from "./middleware/authMiddleware.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/resume", protect, resumeRoutes);
+app.post("/api/customize-resume/download-pdf", express.json(), downloadCustomizedPdf);
 app.use("/api/customize-resume", protect, customizeRoutes);
 
 app.listen(PORT, () => {

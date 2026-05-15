@@ -1,5 +1,6 @@
 import { extractTextFromPDF } from "../utils/pdfUtils.js";
 import { getOpenAIResponse } from "../utils/openai.js";
+import { generatePDFBuffer } from "../utils/pdfGenerator.js";
 import multer from "multer";
 import fs from "fs";
 import Resume from "../models/resumeModel.js";
@@ -74,5 +75,27 @@ ${resumeText}
   } catch (error) {
     console.error("❌ Customize Resume Error:", error);
     res.status(500).json({ message: "AI resume customization failed" });
+  }
+};
+
+export const downloadCustomizedPdf = async (req, res) => {
+  try {
+    const { customizedText } = req.body;
+
+    if (!customizedText) {
+      return res.status(400).json({ message: "Customized resume text is required" });
+    }
+
+    const pdfBuffer = await generatePDFBuffer(customizedText);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=customized-resume.pdf"
+    );
+    res.status(200).send(pdfBuffer);
+  } catch (error) {
+    console.error("❌ Download Customized PDF Error:", error);
+    res.status(500).json({ message: "Failed to generate PDF" });
   }
 };

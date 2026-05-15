@@ -8,6 +8,7 @@ const SmartCustomizeForm = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [customizedResumeText, setCustomizedResumeText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +43,48 @@ const SmartCustomizeForm = () => {
       console.error(error);
     }
     setLoading(false);
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!customizedResumeText) return;
+
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!userInfo) return alert("Please log in to download the PDF.");
+
+    setDownloadLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+        responseType: "blob",
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/customize-resume/download-pdf`,
+        { customizedText: customizedResumeText },
+        config
+      );
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "customized-resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to download the resume PDF.";
+      alert(message);
+      console.error(error);
+    }
+    setDownloadLoading(false);
   };
 
   return (
@@ -105,9 +148,24 @@ const SmartCustomizeForm = () => {
                 </p>
               </div>
             ) : customizedResumeText ? (
-              <div className="text-sm leading-relaxed">
-                {renderResumeText(customizedResumeText, jobDescription)}
-              </div>
+              <>
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="text-sm text-slate-500">
+                    Your AI-customized resume is ready.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleDownloadPdf}
+                    disabled={downloadLoading}
+                    className="inline-flex items-center justify-center rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {downloadLoading ? "Downloading..." : "Download PDF"}
+                  </button>
+                </div>
+                <div className="text-sm leading-relaxed">
+                  {renderResumeText(customizedResumeText, jobDescription)}
+                </div>
+              </>
             ) : (
               <div className="flex items-center justify-center h-full">
                 <p className="text-slate-400">
